@@ -471,6 +471,7 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
                     file = 'name_orig={0};{1}'.format(name_orig, file)
                 filetype = detailInfo.get('filetype', None)
                 label = detailInfo.get('label') if detailInfo.get('label', None) else None
+                year = detailInfo.get('year') if detailInfo.get('year', None) else None
                 imdbnumber = detailInfo.get('imdbnumber').strip() if detailInfo.get('imdbnumber', None) else None
 
                 if label and strm_name:
@@ -485,7 +486,11 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
                     pDialog.update(int(j), message='\'{0}\' {1}'.format(label, getString(39138, globals.addon)))
                     if filetype and filetype == 'file' and get_title_with_OV:
                         m_path = getMovieStrmPath(strm_type, strm_name, label)
-                        m_title = getStrmname(label)
+                        if year and year is not None:
+                            m_title = '{0} ({1})'.format(getStrmname(label), year)
+                        else:
+                            m_title = getStrmname(label)
+
                         movieList.append({'path': m_path, 'title':  m_title, 'url': file, 'provider': provider.get('providerId'), 'imdbnumber': imdbnumber})
                     j = j + len(contentList) * settings.PAGING_MOVIES / 100
 
@@ -538,6 +543,7 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
         lang = strm_type[strm_type.find('(') + 1:strm_type.find(')')]
     showtitle = getStrmname(strm_name)
     strm_type = strm_type.replace('Shows-Collection', 'TV-Shows')
+    year = None
 
     while not globals.monitor.abortRequested() and pagesDone < settings.PAGING_TVSHOWS:
         for detailInfo in showList:
@@ -559,7 +565,11 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
                     dirList.append(json_reply)
                     continue
                 elif filetype == 'file':
+                    if showtitle != detailInfo.get('showtitle'):
+                        year = None
                     showtitle = detailInfo.get('showtitle')
+                    if year is None:
+                        year = detailInfo.get('year') if detailInfo.get('year', None) else None
                     get_title_with_OV = True
                     if settings.HIDE_TITLE_IN_OV:
                         label = detailInfo.get('label').strip() if detailInfo.get('label', None) else None
@@ -651,7 +661,13 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
                                                     episodesList[index - split_episode].get('episode', None),
                                                     episodesList[index - split_episode].get('episodeName', None)))
                         split_episode = 0
-                episodesList[index]['showtitle'] = showtitle
+
+                if year and year is not None:
+                    m_title = '{0} ({1})'.format(showtitle, year)
+                else:
+                    m_title = showtitle
+
+                episodesList[index]['showtitle'] = m_title
                 season_prev = episode.get('season')
                 episode_prev = episode.get('episode')
 
