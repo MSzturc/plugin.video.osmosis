@@ -99,19 +99,20 @@ def writePlaylist(strm_name, strm_type, playlist):
     else:
         type = 'none'
 
-    path = completePath(os.path.join(settings.STRM_LOC, 'playlists'))
+    path = 'special://home/userdata/playlists/video/'
 
     if not xbmcvfs.exists(path):
-        dirs = path.replace(settings.STRM_LOC, '').split('\\') if path.find('\\') != -1 else path.replace(settings.STRM_LOC, '').split('/')
+        dirs = path.replace(settings.STRM_LOC, '').split('\\') if path.find('\\') != -1 else path.replace('special://home/userdata/playlists/video/', '').split('/')
         dirs = filter(None, dirs)
 
-        path = settings.STRM_LOC
+        #path = settings.STRM_LOC
+        path = 'special://home/userdata/playlists/video/'
         for dir in dirs:
             path = completePath(os.path.join(path, dir))
             if not xbmcvfs.exists(path):
                 xbmcvfs.mkdir(path)
 
-    fullpath = '{0}{1}.xsp'.format(path, strm_name)
+    fullpath = '{0}{1}.xsp'.format(path, name)
     addon_log(fullpath)
 
     try:
