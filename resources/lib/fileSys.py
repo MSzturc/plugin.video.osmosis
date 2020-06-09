@@ -89,11 +89,13 @@ def createShowPlaylist(name,type,playlist):
 
 
 def writePlaylist(strm_name, strm_type, playlist):
-    addon_log(strm_type)
+    
+    name = strm_name.replace('++RenamedTitle++','') 
+
     if strm_type.startswith('Movies'):
-        content = createMoviePlaylist(strm_name,'movies',playlist)
+        content = createMoviePlaylist(name,'movies',playlist)
     elif strm_type.startswith('TV-Shows'):
-        content = createShowPlaylist(strm_name,'tvshows',playlist)
+        content = createShowPlaylist(name,'tvshows',playlist)
     else:
         type = 'none'
 
