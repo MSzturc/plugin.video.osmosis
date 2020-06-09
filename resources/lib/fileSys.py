@@ -39,8 +39,72 @@ settings = Settings()
 
 
 def writeSTRM(path, file, url):
-    addon_log('writeSTRM')
+
+    message = 'writeSTRM: path:{0}, file:{1}, url:{2}'.format(path, file, url)
+    addon_log(message)
+
+    if path.find('\\') != -1:
+        allpath = 'All' + path.split('\\')[0]
+    else:
+        allpath = 'All' + path.split('/')[0]
+
+    if path.startswith('Movies'):
+        makeSTRM(allpath, file, url)
     return makeSTRM(path, file, url)
+
+def writePlaylist(strm_name, strm_type, playlist):
+
+    if strm_type.startswith('Movies'):
+        type = 'movies'
+    else:
+        type = 'none'
+
+    rules = ''
+
+    for item in playlist:
+        rule = '''
+            <rule field="filename" operator="contains">
+                <value>{0}</value>
+            </rule>
+        '''.format(item.get('title'))
+        rules += rule
+
+    content = '''
+    <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+    <smartplaylist type="{0}">
+        <name>{1}</name>
+        <match>one</match>
+        {2}
+        <order direction="descending">random</order>
+    </smartplaylist>
+    '''.format(type,strm_name,rules)
+
+
+    path = completePath(os.path.join(settings.STRM_LOC, 'playlists'))
+
+    if not xbmcvfs.exists(path):
+        dirs = path.replace(settings.STRM_LOC, '').split('\\') if path.find('\\') != -1 else path.replace(settings.STRM_LOC, '').split('/')
+        dirs = filter(None, dirs)
+
+        path = settings.STRM_LOC
+        for dir in dirs:
+            path = completePath(os.path.join(path, dir))
+            if not xbmcvfs.exists(path):
+                xbmcvfs.mkdir(path)
+
+    fullpath = '{0}{1}.xsp'.format(path, strm_name)
+    addon_log(fullpath)
+
+    try:
+        fullpath = fullpath
+        fle = xbmcvfs.File(fullpath, 'w')
+    except:
+        fullpath = fullpath
+        fle = xbmcvfs.File(fullpath, 'w')
+
+    fle.write(bytearray(content, 'utf-8'))
+    fle.close()
+    del fle
 
 
 def makeSTRM(filepath, filename, url):

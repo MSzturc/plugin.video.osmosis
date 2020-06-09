@@ -25,7 +25,7 @@ import xbmc
 import xbmcgui
 
 from .common import Globals, Settings, exit, jsonrpc
-from .fileSys import readMediaList, removeMediaList, writeMediaList, writeSTRM, writeTutList
+from .fileSys import readMediaList, removeMediaList, writeMediaList, writeSTRM, writeTutList, writePlaylist
 from .guiTools import addDir, addLink, editDialog, getType, getTypeLangOnly, mediaListDialog, selectDialog
 from .jsonUtils import requestList
 from .kodiDB import musicDatabase, writeMovie, writeShow
@@ -455,6 +455,7 @@ def addAlbum(contentList, strm_name, strm_type, pDialog, PAGINGalbums='1'):
 
 def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n.a.'):
     movieList = []
+    playList = []
     pagesDone = 0
     file = ''
     filetype = ''
@@ -492,6 +493,7 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
                             m_title = getStrmname(label)
 
                         movieList.append({'path': m_path, 'title':  m_title, 'url': file, 'provider': provider.get('providerId'), 'imdbnumber': imdbnumber})
+                        playList.append({'title': m_title})
                     j = j + len(contentList) * settings.PAGING_MOVIES / 100
 
             pagesDone += 1
@@ -525,6 +527,9 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
 
     j = 100 / len(movieList) if len(movieList) > 0 else 1
     # Write strms for all values in movieList
+
+    writePlaylist(name_orig, strm_type, playList)
+
     for movie in movieList:
         pDialog.update(int(j), message='\'{0}\' {1}'.format(movie.get('title'), getString(39138, globals.addon)))
         strm_link = 'plugin://{0}/?url=plugin&mode=10&mediaType=movie&id={1}|{2}'.format(globals.PLUGIN_ID, movie.get('movieID'), movie.get('title')) if settings.LINK_TYPE == 0 else movie.get('url')
