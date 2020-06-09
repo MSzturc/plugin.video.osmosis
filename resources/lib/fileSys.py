@@ -39,17 +39,6 @@ settings = Settings()
 
 
 def writeSTRM(path, file, url):
-
-    message = 'writeSTRM: path:{0}, file:{1}, url:{2}'.format(path, file, url)
-    addon_log(message)
-
-    if path.find('\\') != -1:
-        allpath = 'All' + path.split('\\')[0]
-    else:
-        allpath = 'All' + path.split('/')[0]
-
-    if path.startswith('Movies'):
-        makeSTRM(allpath, file, url)
     return makeSTRM(path, file, url)
 
 def createMoviePlaylist(name,type,playlist):
