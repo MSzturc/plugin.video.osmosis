@@ -73,7 +73,7 @@ def createMoviePlaylist(name,type,playlist):
     </smartplaylist>
     '''.format(type,name,rules)
 
-    return rules
+    return content
 
 def createShowPlaylist(name,type,playlist):
     rules = ''
