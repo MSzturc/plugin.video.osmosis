@@ -25,6 +25,7 @@ from .utils import multiple_replace, multiple_reSub
 
 
 def cleanString(string):
+    newstr = string
     newstr = newstr.replace('&', '&amp;')
     newstr = newstr.replace('>', '&gt;')
     newstr = newstr.replace('<', '&lt;')

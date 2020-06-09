@@ -31,7 +31,7 @@ from .common import Globals, Settings, jsonrpc
 from .kodiDB import delStream
 from .l10n import getString
 from .stringUtils import cleanByDictReplacements, cleanStrmFilesys, completePath, \
-    getMovieStrmPath, getProviderId, getStrmname, multiRstrip, parseMediaListURL, replaceStringElem
+    getMovieStrmPath, getProviderId, getStrmname, multiRstrip, parseMediaListURL, replaceStringElem, cleanString
 from .utils import addon_log, addon_log_notice
 
 globals = Globals()
@@ -52,13 +52,7 @@ def writeSTRM(path, file, url):
         makeSTRM(allpath, file, url)
     return makeSTRM(path, file, url)
 
-def writePlaylist(strm_name, strm_type, playlist):
-
-    if strm_type.startswith('Movies'):
-        type = 'movies'
-    else:
-        type = 'none'
-
+def createMoviePlaylist(name,type,playlist):
     rules = ''
 
     for item in playlist:
@@ -66,7 +60,7 @@ def writePlaylist(strm_name, strm_type, playlist):
             <rule field="filename" operator="contains">
                 <value>{0}</value>
             </rule>
-        '''.format(item.get('title'))
+        '''.format(cleanString(cleanStrmFilesys(item.get('title'))))
         rules += rule
 
     content = '''
@@ -77,8 +71,42 @@ def writePlaylist(strm_name, strm_type, playlist):
         {2}
         <order direction="descending">random</order>
     </smartplaylist>
-    '''.format(type,strm_name,rules)
+    '''.format(type,name,rules)
 
+    return rules
+
+def createShowPlaylist(name,type,playlist):
+    rules = ''
+
+    for item in playlist:
+        rule = '''
+            <rule field="path" operator="contains">
+                <value>{0}</value>
+            </rule>
+        '''.format(cleanString(cleanStrmFilesys(item.get('title'))))
+        rules += rule
+
+    content = '''
+    <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+    <smartplaylist type="{0}">
+        <name>{1}</name>
+        <match>one</match>
+        {2}
+        <order direction="descending">random</order>
+    </smartplaylist>
+    '''.format(type,name,rules)
+
+    return content
+
+
+def writePlaylist(strm_name, strm_type, playlist):
+    addon_log(strm_type)
+    if strm_type.startswith('Movies'):
+        content = createMoviePlaylist(strm_name,'movies',playlist)
+    elif strm_type.startswith('TV-Shows'):
+        content = createShowPlaylist(strm_name,'tvshows',playlist)
+    else:
+        type = 'none'
 
     path = completePath(os.path.join(settings.STRM_LOC, 'playlists'))
 
@@ -102,7 +130,8 @@ def writePlaylist(strm_name, strm_type, playlist):
         fullpath = fullpath
         fle = xbmcvfs.File(fullpath, 'w')
 
-    fle.write(bytearray(content, 'utf-8'))
+    #fle.write(bytearray(content, 'utf-8'))
+    fle.write(str(content))
     fle.close()
     del fle
 

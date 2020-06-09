@@ -542,6 +542,7 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
 def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesDone=0):
     dirList = []
     episodesList = []
+    playList = []
 
     lang = None
     if strm_type.lower().find('other') == -1:
@@ -575,6 +576,8 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
                     showtitle = detailInfo.get('showtitle')
                     if year is None:
                         year = detailInfo.get('year') if detailInfo.get('year', None) else None
+                        playList.append({'title': '{0} ({1})'.format(showtitle, year)})
+
                     get_title_with_OV = True
                     if settings.HIDE_TITLE_IN_OV:
                         label = detailInfo.get('label').strip() if detailInfo.get('label', None) else None
@@ -681,12 +684,16 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
                 pDialog.update(int(step * (index + 1)))
 
             episodesList = []
+        
+        writePlaylist(name_orig, strm_type, playList)
 
         pagesDone += 1
         showList = []
+        playList = []
         if pagesDone < settings.PAGING_TVSHOWS and len(dirList) > 0:
             showList = [item for sublist in dirList for item in sublist]
             dirList = []
+    
 
 
 def getEpisode(episode_item, strm_name, strm_type, j=0, pagesDone=0, name_orig=None):
