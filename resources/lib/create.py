@@ -69,6 +69,7 @@ def searchAddons(cTypes):
 
 
 def fillPluginItems(url, media_type='video', file_type=False, strm=False, strm_name='', strm_type='Other', showtitle='None', name_parent='', name_orig=None, pDialog=None):
+    
     name_orig_from_url, plugin_url = parseMediaListURL(url)
     if not name_orig:
         name_orig = name_orig_from_url
@@ -528,7 +529,7 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
     j = 100 / len(movieList) if len(movieList) > 0 else 1
     # Write strms for all values in movieList
 
-    writePlaylist(name_orig, strm_type, playList)
+    writePlaylist(strm_name, strm_type, playList)
 
     for movie in movieList:
         pDialog.update(int(j), message='\'{0}\' {1}'.format(movie.get('title'), getString(39138, globals.addon)))
@@ -685,7 +686,7 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
 
             episodesList = []
         
-        writePlaylist(name_orig, strm_type, playList)
+        writePlaylist(strm_name, strm_type, playList)
 
         pagesDone += 1
         showList = []
