@@ -711,8 +711,7 @@ def getEpisode(episode_item, strm_name, strm_type, j=0, pagesDone=0, name_orig=N
     showtitle = episode_item.get('showtitle', None)
 
     if showtitle is not None and showtitle != '' and strm_type != '':
-        path = getMovieStrmPath(strm_type, strm_name)
-        path = os.path.join(path, cleanStrmFilesys(showtitle))
+        path = os.path.join(strm_type, cleanStrmFilesys(showtitle))
         provider = getProviderId(file)
         episode = {'path': path, 'strSeasonEpisode': strSeasonEpisode, 'url': file, 'tvShowTitle': cleanStrmFilesys(showtitle), 'provider': provider.get('providerId'), 'metadata': json.dumps(episode_item)}
 
