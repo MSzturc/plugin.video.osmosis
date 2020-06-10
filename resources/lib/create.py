@@ -489,7 +489,7 @@ def addMovies(contentList, strm_name, strm_type, name_orig, pDialog, provider='n
                     if filetype and filetype == 'file' and get_title_with_OV:
                         m_path = getMovieStrmPath(strm_type, strm_name, label)
                         if year and year is not None:
-                            m_title = '{0} ({1})'.format(getStrmname(label), year)
+                            m_title = '{0} ({1})'.format(cleanLabels(getStrmname(label)), year)
                         else:
                             m_title = getStrmname(label)
 
