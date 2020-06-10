@@ -575,7 +575,7 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
                     if showtitle != detailInfo.get('showtitle'):
                         year = None
                     showtitle = detailInfo.get('showtitle')
-                    if year is None:
+                    if year is None and showtitle:
                         year = detailInfo.get('year') if detailInfo.get('year', None) else None
                         playList.append({'title': '{0} ({1})'.format(showtitle, year)})
 
