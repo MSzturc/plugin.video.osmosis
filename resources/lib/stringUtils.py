@@ -42,7 +42,7 @@ def uncleanString(string):
 
 def cleanLabels(text, formater='', keep_year=False):
     dictresub = {'\[COLOR (.+?)\]' : '', '\[/COLOR\]' : '', '\[COLOR=(.+?)\]' : '', '\[color (.+?)\]': '',
-                 '\[/color\]': '', '\[Color=(.+?)\]': '', '\[/Color\]': ''}
+                 '\[/color\]': '', '\[Color=(.+?)\]': '', '\[/Color\]': '', '\(Episode\s[\w]*\)': ''}
 
     replacements = (('[]', ''), ('[UPPERCASE]', ''),
                    ('[/UPPERCASE]', ''), ('[LOWERCASE]', ''),
@@ -60,7 +60,7 @@ def cleanLabels(text, formater='', keep_year=False):
                    ('\t', ''), ('\ ', ''),
                    ('/ ', ''), ('\\', '/'),
                    ('//', '/'), ('plugin.video.', ''),
-                   ('plugin.audio.', ''))
+                   ('plugin.audio.', ''), ('Marvel Studios\' ',''))
 
     text = multiple_reSub(text, dictresub)
     text = multiple_replace(text, *replacements)
