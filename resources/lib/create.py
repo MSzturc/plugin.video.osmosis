@@ -616,9 +616,9 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
 
                         if detailInfo.get('season', -1) > -1 and detailInfo.get('episode', -1) > -1  and export_episode:
                             if  episodetitle.find('Teil 1 und 2') >= 0 or episodetitle.find('Parts 1 & 2') >= 0 :
-                                addon_log_notice('found tvdb entry for \'{0}\': \'S{1:02d}E{2:02d} - {3}\' (multi) matched to \'S{4:02d}E{5:02d} - {6}\''
-                                    .format(showtitle, episodeseason, episode, episodetitle, detailInfo['season'], detailInfo['episode'], detailInfo['episodeName']))
-                                data = getEpisodeByName(showtitle, episodeseason, episode + 1, re.sub('(Teil 1 und 2|Parts 1 & 2)', '(2)', eptitle), lang)
+                                data = []
+                                if settings.SEARCH_THETVDB == 2 or settings.SEARCH_THETVDB == 1:
+                                    data = getEpisodeByName(showtitle, episodeseason, episode + 1, re.sub('(Teil 1 und 2|Parts 1 & 2)', '(2)', eptitle), lang)
                                 if data:
                                     addon_log_notice('found tvdb entry for \'{0}\': \'S{1:02d}E{2:02d} - {3}\' (multi) matched to \'S{4:02d}E{5:02d} - {6}\''
                                         .format(showtitle, episodeseason, episode, episodetitle, detailInfo['season'], detailInfo['episode'] + 1, data.get('episodeName', None)))
@@ -632,7 +632,9 @@ def getTVShowFromList(showList, strm_name, strm_type, name_orig, pDialog, pagesD
                                 episodem = []
                                 episodeNamem = []
                                 for e, eptitle in enumerate(episodetitles):
-                                    data = getEpisodeByName(showtitle, episodeseason, episode, eptitle, lang)
+                                    data = []
+                                    if settings.SEARCH_THETVDB == 2 or settings.SEARCH_THETVDB == 1:
+                                        data = getEpisodeByName(showtitle, episodeseason, episode, eptitle, lang)
                                     if data:
                                         seasonm.append(data.get('season'))
                                         episodem.append(data.get('episode'))
